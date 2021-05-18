@@ -1,32 +1,35 @@
-﻿@page "/edit-context-with-custom-input-text-area"
+﻿@page "/custom-input-text-area-with-validation-display-control"
 
 <a href="/" style="padding-bottom: 1em; display: block">Back</a>
 
-<h1>Edit Context With Custom Input Text Area</h1>
+<h1>CustomInputTextAreaWithValidationDisplayControl</h1>
 
 <p>
-    The below form relies on the combination of an EditContext and a custom InputTextArea. This example works but not
-    fully as intended.
+    The below form relies on the combination of an EditContext and a custom InputTextArea. This example mostly works but
+    it still doesn't feel ideal.
 </p>
 
 <p>
-    This is because validation is triggering as the user types, resulting in a subpar user experience. If the model
-    validation is complex or time consuming, running validation on each key stroke is overkill; particularly when
-    validation failures won't show until the form has been submitted.
+    If the model validation is complex or time consuming, running validation on each key stroke is overkill;
+    particularly when validation failures won't show until the form has been submitted.
 </p>
 
 <p>Behavior to notice:</p>
 <ul>
-    <li>The validation check on submit is accurate.</li>
+    <li>Validation error messages only show on submit.</li>
+    <li>The form is still colored red or green as the user types so the boolean doesn't completely control validation indicators</li>
     <li>Validation is triggered as the user types which might be resource intensive.</li>
-    <li>Validation errors show up as input changes on the form.</li>
 </ul>
 
 
 <h2>Demo</h2>
 <EditForm EditContext="EC">
     <DataAnnotationsValidator/>
-    <ValidationSummary/>
+
+    @if (ShowValidation)
+    {
+        <ValidationSummary/>
+    }
 
     <InputTextAreaOnInput
         placeholder="Enter your message here"
@@ -36,6 +39,7 @@
 </EditForm>
 
 @code {
+    private bool ShowValidation { get; set; } = false;
     private ExampleModel Model { get; set; } = new ExampleModel();
     private string DebugMessage { get; set; }
 
@@ -45,15 +49,15 @@
     {
         base.OnInitialized();
         EC = new EditContext(Model);
-
     }
 
     private void SubmitOnEnter(KeyboardEventArgs args)
     {
+        ShowValidation = false;
         if (args.CtrlKey && args.Key == @"Enter")
         {
             DebugMessage = EC.Validate() ? "EC.Validate() is true" : "EC.Validate() is false";
+            ShowValidation = !EC.Validate();
         }
     }
-
 }
