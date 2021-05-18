@@ -1,0 +1,53 @@
+﻿@page "/edit-context-with-custom-input-text-area"
+
+<a href="/" style="padding-bottom: 1em; display: block">Back</a>
+
+<h1>Edit Context With Custom Input Text Area</h1>
+
+<p>
+    The below form relies on the combination of an EditContext and a custom InputTextArea. This example works but not
+    fully as intended. This is because validation is triggering as the user types, resulting in a subpar user
+    experience.
+</p>
+
+<p>Behavior to notice:</p>
+<ul>
+    <li>The validation check on submit is accurate.</li>
+    <li>Validation errors show up as input changes on the form.</li>
+</ul>
+
+
+<h2>Demo</h2>
+<EditForm EditContext="EC">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <InputTextAreaOnInput
+        placeholder="Enter your message here"
+        @bind-Value="Model.Message"
+        @onkeypress="SubmitOnEnter"/>
+    <p>@DebugMessage</p>
+</EditForm>
+
+@code {
+    private ExampleModel Model { get; set; } = new ExampleModel();
+    private string DebugMessage { get; set; }
+
+    private EditContext EC { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        EC = new EditContext(Model);
+
+    }
+
+    private void SubmitOnEnter(KeyboardEventArgs args)
+    {
+        if (args.CtrlKey && args.Key == @"Enter")
+        {
+            DebugMessage = EC.Validate() ? "EC.Validate() is true" : "EC.Validate() is false";
+        }
+    }
+
+}
