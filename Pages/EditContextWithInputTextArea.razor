@@ -1,0 +1,54 @@
+﻿@page "/edit-context-with-input-text-area"
+
+<a href="/" style="padding-bottom: 1em; display: block">Back</a>
+
+<h1>Edit Context With Input Text Area</h1>
+
+<p>
+    The below form relies on the combination of an EditContext and the built-in InputTextArea. This example does not
+    work as intended. This is because model validation does not occur until the text area loses focus.
+</p>
+
+<p>Behavior to notice:</p>
+<ul>
+    <li>On initial load, if you Ctrl-Enter, the form will be considered invalid.</li>
+    <li>If you fill out the box and Ctrl-Enter, the form is still invalid despite having valid content.</li>
+    <li>If you click out and back into the textarea, Ctrl-Enter will show the form is valid.</li>
+    <li>Deleting the entire contents of the box and hitting Ctrl-Enter will show the form is valid.</li>
+</ul>
+
+
+<h2>Demo</h2>
+<EditForm EditContext="EC">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <InputTextArea
+        placeholder="Enter your message here"
+        @bind-Value="Model.Message"
+        @onkeypress="SubmitOnEnter"/>
+    <p>@DebugMessage</p>
+</EditForm>
+
+@code {
+    private ExampleModel Model { get; set; } = new ExampleModel();
+    private string DebugMessage { get; set; }
+
+    private EditContext EC { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        EC = new EditContext(Model);
+
+    }
+
+    private void SubmitOnEnter(KeyboardEventArgs args)
+    {
+        if (args.CtrlKey && args.Key == @"Enter")
+        {
+            DebugMessage = EC.Validate() ? "EC.Validate() is true" : "EC.Validate() is false";
+        }
+    }
+
+}

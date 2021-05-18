@@ -1,7 +1,25 @@
 ﻿@page "/"
+@using System.ComponentModel.DataAnnotations
 
-<h1>Hello, world!</h1>
+<h1>Submitting a form without a button</h1>
 
-Welcome to your new app.
+<p>
+    This repository show cases various attempts to deal with a Blazor form that lacks a submit button. The goal is to
+    have a single textarea which the user can submit via a Ctrl+Enter key combinaton. Validation errors should be shown
+    to the user once they attempt to submit. I do not want errors to show up as they type.
+</p>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<dl>
+    <dt>
+        <a href="/edit-context-with-input-text-area">
+            EditContextWithInputTextArea
+        </a>
+    </dt>
+    <dd>
+        <p>
+            This example makes use of an Edit Context and the built-in
+            InputTextArea. It does not work as intended as the form fails to
+            validate the model appropriately.
+        </p>
+    </dd>
+</dl>
